@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .version {
+            font-size: 14px;
+            color: gray;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .healthy {
+            color: green;
+        }
+
+        .unhealthy {
+            color: red;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: gray;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Frontend Service</h1>
+    <div class="version">Version: v2.0</div>
+
+    <button onclick="checkAPI()">Check API Health</button>
+
+    <p id="result"></p>
+    <div id="time" class="timestamp"></div>
+</div>
+
+<script>
+    async function checkAPI() {
+        const resultElement = document.getElementById("result");
+        const timeElement = document.getElementById("time");
+
+        try {
+            const response = await fetch("/api/health");
+            const data = await response.json();
+
+            resultElement.innerText = "API Status: " + data.status;
+            resultElement.className = "healthy";
+        } catch (error) {
+            resultElement.innerText = "API Unreachable";
+            resultElement.className = "unhealthy";
+        }
+
+        const now = new Date();
+        timeElement.innerText = "Last checked: " + now.toLocaleString();
+    }
+</script>
+
+</body>
+</html>

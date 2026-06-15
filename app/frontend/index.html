@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Microservices Demo</title>
+</head>
+<body>
+    <h1>Frontend Service</h1>
+
+    <button onclick="checkHealth()">Check API Health</button>
+    <button onclick="sendJob()">Send Job</button>
+
+    <p id="output"></p>
+
+    <script>
+        async function checkHealth() {
+            const res = await fetch("/api/health");
+            const data = await res.json();
+            document.getElementById("output").innerText =
+                "API Status: " + data.status;
+        }
+
+        async function sendJob() {
+            const res = await fetch("/api/job");
+            const data = await res.json();
+            document.getElementById("output").innerText =
+                data.message;
+        }
+    </script>
+</body>
+</html>
