@@ -9,7 +9,7 @@ on:
 env:
   ENVIRONMENT: dev
   AWS_REGION: us-east-1
-  EKS_CLUSTER_NAME: microservices-cluster
+  EKS_CLUSTER_NAME: dev-eks-cluster
   ECR_REGISTRY: 760773573647.dkr.ecr.us-east-1.amazonaws.com
 
 permissions:
