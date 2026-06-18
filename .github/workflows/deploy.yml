@@ -5,6 +5,7 @@ on:
     branches:
       - main
 
+
 env:
   ENVIRONMENT: dev
   AWS_REGION: us-east-1
