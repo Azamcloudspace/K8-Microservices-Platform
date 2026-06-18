@@ -25,3 +25,7 @@ output "sqs_queue_url" {
 output "irsa_sqs_role_arn" {
   value = module.iam.irsa_sqs_role_arn
 }
+
+output "github_actions_role_arn" {
+  value = module.iam.github_actions_role_arn
+}

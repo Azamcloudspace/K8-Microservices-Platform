@@ -2,15 +2,6 @@
 terraform/.terraform/
 terraform/*.tfstate
 terraform/*.tfstate.backup
-terraform/.terraform.lock.hcl
 
-# Kubernetes local manifests
-api-deployment.yaml
-frontend-deployment.yaml
-worker-deployment.yaml
-nginx.conf
-kind.exe
-
-# AWS credentials
-*.pem
-*.key
+# Local kubernetes files
+*.swp
