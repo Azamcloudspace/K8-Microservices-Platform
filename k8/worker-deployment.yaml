@@ -15,7 +15,7 @@ spec:
       serviceAccountName: app-service-account
       containers:
         - name: worker
-          image: 760773573647.dkr.ecr.us-east-1.amazonaws.com/worker:IMAGE_TAG
+          image: 760773573647.dkr.ecr.us-east-1.amazonaws.com/dev-worker:IMAGE_TAG
           env:
             - name: AWS_REGION
               value: "us-east-1"
