@@ -16,7 +16,7 @@ resource "aws_eks_cluster" "main" {
   tags = {
     Environment = var.environment
   }
-}
+}  
 
 resource "aws_eks_node_group" "main" {
   cluster_name    = aws_eks_cluster.main.name
