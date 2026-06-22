@@ -139,3 +139,33 @@ resource "aws_iam_role_policy_attachment" "github_actions_admin" {
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
   role       = aws_iam_role.github_actions.name
 }
+
+resource "aws_iam_role" "lb_controller" {
+  name = "${var.environment}-lb-controller-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Federated = "arn:aws:iam::${var.account_id}:oidc-provider/${var.oidc_provider}"
+      }
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Condition = {
+        StringEquals = {
+          "${var.oidc_provider}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+        }
+      }
+    }]
+  })
+}
+
+resource "aws_iam_policy" "lb_controller" {
+  name   = "${var.environment}-lb-controller-policy"
+  policy = file("${path.module}/lb-controller-policy.json")
+}
+
+resource "aws_iam_role_policy_attachment" "lb_controller" {
+  policy_arn = aws_iam_policy.lb_controller.arn
+  role       = aws_iam_role.lb_controller.name
+}
