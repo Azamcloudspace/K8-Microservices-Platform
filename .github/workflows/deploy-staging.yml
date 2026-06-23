@@ -3,12 +3,12 @@ name: Build and Deploy to EKS
 on:
   push:
     branches:
-      - main
+      - staging
 
 env:
-  ENVIRONMENT: dev
+  ENVIRONMENT: staging
   AWS_REGION: us-east-1
-  EKS_CLUSTER_NAME: dev-eks-cluster
+  EKS_CLUSTER_NAME: staging-eks-cluster
   ECR_REGISTRY: 760773573647.dkr.ecr.us-east-1.amazonaws.com
 
 permissions:
