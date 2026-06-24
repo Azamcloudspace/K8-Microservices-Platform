@@ -1,14 +1,16 @@
-name: Build and Deploy to EKS(dev)
+name: Build and Deploy to EKS
 
 on:
   push:
     branches:
       - dev
+      - staging
+      - main
 
 env:
-  ENVIRONMENT: dev
+  ENVIRONMENT: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
   AWS_REGION: us-east-1
-  EKS_CLUSTER_NAME: dev-eks-cluster
+  EKS_CLUSTER_NAME: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}-eks-cluster
   ECR_REGISTRY: 760773573647.dkr.ecr.us-east-1.amazonaws.com
 
 permissions:
@@ -18,7 +20,7 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
 
     steps:
       - name: Checkout code
