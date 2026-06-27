@@ -1,4 +1,4 @@
-name: Build and Deploy to EKS(staging)
+name: Build and Deploy to EKS
 
 on:
   push:
