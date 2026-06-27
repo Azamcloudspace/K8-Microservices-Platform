@@ -12,6 +12,15 @@ on:
           - plan
           - apply
           - destroy
+      environment:
+        description: 'Environment to target'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
 
 permissions:
   id-token: write
@@ -23,6 +32,7 @@ env:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
 
     steps:
       - name: Checkout code
@@ -31,7 +41,7 @@ jobs:
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::760773573647:role/dev-github-actions-role
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
@@ -41,16 +51,21 @@ jobs:
         working-directory: terraform
         run: terraform init
 
+      - name: Select Workspace
+        working-directory: terraform
+        run: |
+          terraform workspace select ${{ github.event.inputs.environment }} || terraform workspace new ${{ github.event.inputs.environment }}
+
       - name: Terraform Plan
         working-directory: terraform
-        run: terraform plan
+        run: terraform plan -var-file=envs/${{ github.event.inputs.environment }}.tfvars
 
       - name: Terraform Apply
         if: github.event.inputs.action == 'apply'
         working-directory: terraform
-        run: terraform apply -auto-approve
+        run: terraform apply -var-file=envs/${{ github.event.inputs.environment }}.tfvars -auto-approve
 
       - name: Terraform Destroy
         if: github.event.inputs.action == 'destroy'
         working-directory: terraform
-        run: terraform destroy -auto-approve
+        run: terraform destroy -var-file=envs/${{ github.event.inputs.environment }}.tfvars -auto-approve
