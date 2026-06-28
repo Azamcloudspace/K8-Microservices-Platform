@@ -67,9 +67,7 @@ jobs:
           kubectl apply -f k8/api-deployment.yaml
           kubectl apply -f k8/worker-deployment.yaml
           kubectl apply -f k8/ingress.yaml
-          kubectl set image deployment/frontend frontend=$ECR_REGISTRY/$ENVIRONMENT-frontend:${{ github.sha }}
-          kubectl set image deployment/api api=$ECR_REGISTRY/$ENVIRONMENT-api:${{ github.sha }}
-          kubectl set image deployment/worker worker=$ECR_REGISTRY/$ENVIRONMENT-worker:${{ github.sha }}
+
           kubectl rollout status deployment/frontend
           kubectl rollout status deployment/api
           kubectl rollout status deployment/worker
