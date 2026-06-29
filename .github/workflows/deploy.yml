@@ -55,9 +55,20 @@ jobs:
         run: |
           aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME
 
+      - name: Deploy to EKS
+        run: |
           sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8/frontend-deployment.yaml
           sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8/api-deployment.yaml
           sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8/worker-deployment.yaml
+
+          kubectl apply -f k8/serviceaccount.yaml
+          kubectl apply -f k8/frontend-deployment.yaml
+          kubectl apply -f k8/api-deployment.yaml
+          kubectl apply -f k8/worker-deployment.yaml
+
+          kubectl rollout status deployment/frontend
+          kubectl rollout status deployment/api
+          kubectl rollout status deployment/worker
 
       - name: Install Helm
         uses: azure/setup-helm@v4
@@ -66,8 +77,6 @@ jobs:
 
       - name: Install AWS Load Balancer Controller
         run: |
-          kubectl delete mutatingwebhookconfiguration aws-load-balancer-webhook --ignore-not-found
-          kubectl delete validatingwebhookconfiguration aws-load-balancer-webhook --ignore-not-found
           helm repo add eks https://aws.github.io/eks-charts
           helm repo update
           helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller \
@@ -80,16 +89,7 @@ jobs:
 
           kubectl rollout status deployment/aws-load-balancer-controller -n kube-system --timeout=120s
 
-      - name: Deploy to EKS
+      - name: Deploy Ingress
         run: |
-          kubectl apply -f k8/serviceaccount.yaml
           kubectl apply -f k8/lb-controller-serviceaccount.yaml
-          kubectl apply -f k8/frontend-deployment.yaml
-          kubectl apply -f k8/api-deployment.yaml
-          kubectl apply -f k8/worker-deployment.yaml
           kubectl apply -f k8/ingress.yaml
-
-          kubectl rollout status deployment/frontend
-          kubectl rollout status deployment/api
-          kubectl rollout status deployment/worker
-
