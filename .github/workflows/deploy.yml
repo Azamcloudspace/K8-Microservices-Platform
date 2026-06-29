@@ -62,6 +62,7 @@ jobs:
           sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8/worker-deployment.yaml
 
           kubectl apply -f k8/serviceaccount.yaml
+          kubectl apply -f k8/lb-controller-serviceaccount.yaml
           kubectl apply -f k8/frontend-deployment.yaml
           kubectl apply -f k8/api-deployment.yaml
           kubectl apply -f k8/worker-deployment.yaml
@@ -91,5 +92,5 @@ jobs:
 
       - name: Deploy Ingress
         run: |
-          kubectl apply -f k8/lb-controller-serviceaccount.yaml
+
           kubectl apply -f k8/ingress.yaml
