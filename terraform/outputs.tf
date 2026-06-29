@@ -33,3 +33,7 @@ output "github_actions_role_arn" {
 output "lb_controller_role_arn" {
   value = module.iam.lb_controller_role_arn
 }
+
+output "vpc_id" {
+  value = module.vpc.vpc_id
+}
