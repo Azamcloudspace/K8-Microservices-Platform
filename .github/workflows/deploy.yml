@@ -76,6 +76,8 @@ jobs:
             --set region=$AWS_REGION \
             --set vpcId=${{ secrets.VPC_ID }}
 
+          kubectl rollout status deployment/aws-load-balancer-controller -n kube-system --timeout=120s
+
       - name: Deploy to EKS
         run: |
           kubectl apply -f k8/serviceaccount.yaml
