@@ -20,4 +20,4 @@ spec:
             - name: AWS_REGION
               value: "us-east-1"
             - name: QUEUE_URL
-              value: "https://sqs.us-east-1.amazonaws.com/760773573647/dev-job-queue"
+              value: "https://sqs.us-east-1.amazonaws.com/760773573647/dev-job-queuee"
