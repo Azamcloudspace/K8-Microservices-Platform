@@ -60,6 +60,9 @@ jobs:
           sed -i "s|ENVIRONMENT|$ENVIRONMENT|g" k8/frontend-deployment.yaml
           sed -i "s|ENVIRONMENT|$ENVIRONMENT|g" k8/api-deployment.yaml
           sed -i "s|ENVIRONMENT|$ENVIRONMENT|g" k8/worker-deployment.yaml
+          sed -i "s|ENVIRONMENT|$ENVIRONMENT|g" k8/serviceaccount.yaml
+          sed -i "s|ENVIRONMENT|$ENVIRONMENT|g" k8/lb-controller-serviceaccount.yaml
+
 
 
           sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8/frontend-deployment.yaml
