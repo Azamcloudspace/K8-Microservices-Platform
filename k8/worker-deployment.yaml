@@ -15,9 +15,9 @@ spec:
       serviceAccountName: app-service-account
       containers:
         - name: worker
-          image: 760773573647.dkr.ecr.us-east-1.amazonaws.com/dev-worker:IMAGE_TAG
+          image: 760773573647.dkr.ecr.us-east-1.amazonaws.com/ENVIRONMENT-worker:IMAGE_TAG
           env:
             - name: AWS_REGION
               value: "us-east-1"
             - name: QUEUE_URL
-              value: "https://sqs.us-east-1.amazonaws.com/760773573647/dev-job-queuee"
+              value: "https://sqs.us-east-1.amazonaws.com/760773573647/ENVIRONMENT-job-queue"
