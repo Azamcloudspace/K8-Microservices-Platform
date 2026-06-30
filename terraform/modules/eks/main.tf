@@ -23,7 +23,7 @@ resource "aws_eks_node_group" "main" {
   node_group_name = "${var.environment}-node-group"
   node_role_arn   = var.node_group_role_arn
   subnet_ids      = var.private_subnet_ids
-  instance_types  = ["t3.medium"]
+  instance_types  = ["t3.large"]
 
   scaling_config {
     desired_size = 2
@@ -53,4 +53,21 @@ resource "aws_eks_access_policy_association" "github_actions" {
   access_scope {
     type = "cluster"
   }
+
 }
+
+resource "aws_eks_access_entry" "local_admin" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = "arn:aws:iam::760773573647:user/azamcloudspace"
+}
+
+resource "aws_eks_access_policy_association" "local_admin" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = "arn:aws:iam::760773573647:user/azamcloudspace"
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
