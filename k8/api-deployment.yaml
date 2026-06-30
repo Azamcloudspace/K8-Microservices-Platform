@@ -15,14 +15,14 @@ spec:
       serviceAccountName: app-service-account
       containers:
         - name: api
-          image: 760773573647.dkr.ecr.us-east-1.amazonaws.com/dev-api:IMAGE_TAG
+          image: 760773573647.dkr.ecr.us-east-1.amazonaws.com/ENVIRONMENT-api:IMAGE_TAG
           ports:
             - containerPort: 5000
           env:
             - name: AWS_REGION
               value: "us-east-1"
             - name: QUEUE_URL
-              value: "https://sqs.us-east-1.amazonaws.com/760773573647/dev-job-queue"
+              value: "https://sqs.us-east-1.amazonaws.com/760773573647/ENVIRONMENT-job-queue"
 ---
 apiVersion: v1
 kind: Service
