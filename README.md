@@ -85,7 +85,7 @@ k8/
  
 ---
  
-## CI/CD — GitHub Actions
+## GitHub Actions
  
 Two workflows replacing CodePipeline + CodeBuild:
  
@@ -100,31 +100,31 @@ Two workflows replacing CodePipeline + CodeBuild:
 
 Initialize the project and configure the S3 backend:
 
-![Terraform Init]()
+![Terraform Init](screenshot/Screenshot1.png)
 
 ### Step 2 — Terraform Plan
 
 Review what will be created before applying:
 
-![Terraform Plan]()
+![Terraform Plan](screenshot/Screenshot2.png)
 
 ### Step 3 — Terraform Apply
 
 Provision the full infrastructure — VPC, EKS cluster, node group, ECR repos, SQS queue, IAM roles, This 
 
-![Terraform Apply Complete]()
+![Terraform Apply Complete](screenshot/Screenshot3.png)
 
 ### Step 4 - Add Secrets to GitHub
 
 Add Github Actions workflow secrets to Github from Terraform outputs
 
-![Secrets]()
+![Secrets](screenshot/Screenshot4.png)
 
 ### Step 5 - Add , Commit and Push to Git 
 
 Commit and Push your Git repo on your local computer to GitHub
 
-![Git Push]()
+![Git Push](screenshot/Screenshot5.png)
 
 ### Step 6 - Workflow Trigger
 
@@ -138,19 +138,40 @@ Code pushed
                 → kubectl apply manifests
                   → kubectl rollout status
                     → Install Helm
-                      → Install AWS LoadBAlancer Controller
+                      → Install AWS LoadBalancer Controller
                       
         
 ```
- 
-![CICD]()
+
+![Workflow](screenshot/Screenshot6.png)
+Workflow Completed
+
+![Workflow](screenshot/Screenshot9.png)
+EKS Pods
+
+![Workflow](screenshot/Screenshot10.png)
+K8 LoadBalancer showing DNS Name
+
+![Workflow](screenshot/Screenshot11.png)
+Working Web Application
 
 Images are tagged with the git commit SHA for full traceability. A `sed` command substitutes the `IMAGE_TAG` placeholder in manifests before `kubectl apply` runs — no `latest` tag required.
  
 Multi-environment promotion uses GitHub Environment protection rules — deployments pause for manual approval.
- 
+
+![Workflow](screenshot/Screenshot7.png)
+Manual Approval Section
+
 ---
  
+## CI/CD
+
+Make Changes to your code in the App file , in this case `app/frontend/index.html` and push to Git, This will trigger deploy workflow, and make changes to your app. Refresh Loadbalancer Domain Web Page.
+
+![CICD](screenshots/Screenshot12.png)
+
+Check for previous `app/frontend/index.html` version in the commit history
+
 ## Security
  
 - No hardcoded credentials anywhere
@@ -158,6 +179,7 @@ Multi-environment promotion uses GitHub Environment protection rules — deploym
 - GitHub Actions authenticates via OIDC (no stored AWS keys)
 - Worker nodes and pods in private subnets — ALB is the only public entry point
 - Environment-scoped GitHub Secrets per environment
+
 ---
  
 ## Evolution from ECS Project
