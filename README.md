@@ -1,5 +1,7 @@
-# K8s-Microservices-Platform
+# K8s-Microservices-Platform (Migration of ECS Microservices CICD Platfom Project)
  
+**Check `ECS-MICROSERVICES-CICD-PLATFORM` Project for relations and relationg Architectural Diagram** 
+
 ## Project Summary
  
 Migrated a production microservices workload from AWS ECS Fargate to Amazon EKS, replacing AWS-native tooling with cloud-agnostic, industry-standard alternatives. Same application architecture, same SQS-based design — rebuilt on Kubernetes, Terraform, and GitHub Actions.
