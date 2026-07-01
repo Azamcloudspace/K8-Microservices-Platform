@@ -115,15 +115,20 @@ Provision the full infrastructure — VPC, EKS cluster, node group, ECR repos, S
 ![Terraform Apply Complete]()
 
 ### Step 4 - Add Secrets to GitHub
+
 Add Github Actions workflow secrets to Github from Terraform outputs
 
 ![Secrets]()
 
 ### Step 5 - Add , Commit and Push to Git 
 
-Triggers the deploy workflow to build the images, push images to ECR, Deploy Kubernetes Manifests to EKS , Installs Helm and Load Balancer Controller to route traffic to pods
+Commit and Push your Git repo on your local computer to GitHub
 
-![Terraform Apply Complete]()
+![Git Push]()
+
+### Step 6 - Workflow Trigger
+
+Push triggers the deploy workflow to build the images, push images to ECR, Deploy Kubernetes Manifests to EKS , Installs Helm and Load Balancer Controller to route traffic to pods
 
 ```
 Code pushed
