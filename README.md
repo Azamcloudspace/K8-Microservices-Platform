@@ -100,31 +100,31 @@ Two workflows replacing CodePipeline + CodeBuild:
 
 Initialize the project and configure the S3 backend:
 
-![Terraform Init](screenshot/Screenshot1.png)
+![Terraform Init](screenshots/Screenshot1.png)
 
 ### Step 2 — Terraform Plan
 
 Review what will be created before applying:
 
-![Terraform Plan](screenshot/Screenshot2.png)
+![Terraform Plan](screenshots/Screenshot2.png)
 
 ### Step 3 — Terraform Apply
 
 Provision the full infrastructure — VPC, EKS cluster, node group, ECR repos, SQS queue, IAM roles, This 
 
-![Terraform Apply Complete](screenshot/Screenshot3.png)
+![Terraform Apply Complete](screenshots/Screenshot3.png)
 
 ### Step 4 - Add Secrets to GitHub
 
 Add Github Actions workflow secrets to Github from Terraform outputs
 
-![Secrets](screenshot/Screenshot4.png)
+![Secrets](screenshots/Screenshot4.png)
 
 ### Step 5 - Add , Commit and Push to Git 
 
 Commit and Push your Git repo on your local computer to GitHub
 
-![Git Push](screenshot/Screenshot5.png)
+![Git Push](screenshots/Screenshot5.png)
 
 ### Step 6 - Workflow Trigger
 
@@ -143,23 +143,23 @@ Code pushed
         
 ```
 
-![Workflow](screenshot/Screenshot6.png)
+![Workflow](screenshots/Screenshot6.png)
 Workflow Completed
 
-![Workflow](screenshot/Screenshot9.png)
+![Workflow](screenshots/Screenshot9.png)
 EKS Pods
 
-![Workflow](screenshot/Screenshot10.png)
+![Workflow](screenshots/Screenshot10.png)
 K8 LoadBalancer showing DNS Name
 
-![Workflow](screenshot/Screenshot11.png)
+![Workflow](screenshots/Screenshot11.png)
 Working Web Application
 
 Images are tagged with the git commit SHA for full traceability. A `sed` command substitutes the `IMAGE_TAG` placeholder in manifests before `kubectl apply` runs — no `latest` tag required.
  
 Multi-environment promotion uses GitHub Environment protection rules — deployments pause for manual approval.
 
-![Workflow](screenshot/Screenshot7.png)
+![Workflow](screenshots/Screenshot7.png)
 Manual Approval Section
 
 ---
