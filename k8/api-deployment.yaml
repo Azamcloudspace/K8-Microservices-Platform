@@ -22,16 +22,19 @@ spec:
             - name: AWS_REGION
               value: "us-east-1"
             - name: QUEUE_URL
-              value: "https://sqs.us-east-1.amazonaws.com/760773573647/ENVIRONMENT-job-queuee"
+              value: "https://sqs.us-east-1.amazonaws.com/760773573647/ENVIRONMENT-job-queue"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: api
+  labels:
+    app: api
 spec:
   type: ClusterIP
   selector:
     app: api
   ports:
-    - port: 80
+    - name: http
+      port: 80
       targetPort: 5000
