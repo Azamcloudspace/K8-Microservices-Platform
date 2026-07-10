@@ -73,9 +73,7 @@ jobs:
           kubectl apply -f k8/frontend-deployment.yaml
           kubectl apply -f k8/api-deployment.yaml
           kubectl apply -f k8/worker-deployment.yaml
-          kubectl apply -f k8/servicemonitor.yaml
-          kubectl apply -f k8/alertingrules.yaml
-          
+
           kubectl rollout status deployment/frontend
           kubectl rollout status deployment/api
           kubectl rollout status deployment/worker
@@ -109,3 +107,8 @@ jobs:
             --set grafana.adminPassword=${{ secrets.GRAFANA_PASSWORD }} \
             --set prometheus.prometheusSpec.retention=7d
           kubectl rollout status deployment/kube-prometheus-stack-grafana -n monitoring --timeout=180s
+
+      - name: Apply ServiceMonitor and AlertingRules
+        run: |
+          kubectl apply -f k8/servicemonitor.yaml
+          kubectl apply -f k8/alertingrules.yaml
