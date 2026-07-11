@@ -97,4 +97,18 @@ jobs:
 
           kubectl rollout status deployment/aws-load-balancer-controller -n kube-system --timeout=120s
           
+      - name: Install kube-prometheus-stack
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update
+          helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+            -n monitoring \
+            --create-namespace \
+            --set grafana.adminPassword=${{ secrets.GRAFANA_PASSWORD }} \
+            --set prometheus.prometheusSpec.retention=7d
+          kubectl rollout status deployment/kube-prometheus-stack-grafana -n monitoring --timeout=180s
 
+      - name: Apply ServiceMonitor and AlertingRules
+        run: |
+          kubectl apply -f k8/servicemonitor.yaml
+          kubectl apply -f k8/alertingrules.yaml
