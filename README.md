@@ -15,6 +15,7 @@ Migrated a production microservices workload from AWS ECS Fargate to Amazon EKS,
 - Replaced CodePipeline/CodeBuild with GitHub Actions
 - Implemented IRSA for keyless AWS authentication from pods
 - Deployed AWS Load Balancer Controller to manage ALB provisioning from Kubernetes
+- Deployed Prometheus, Grafana, and Alertmanager for Observability
 - Multi-environment promotion strategy (dev → staging → prod) with manual approval gates
 ---
  
@@ -71,7 +72,9 @@ k8/
 ├── frontend-deployment.yaml          # Deployment + ClusterIP Service
 ├── api-deployment.yaml               # Deployment + ClusterIP Service
 ├── worker-deployment.yaml            # Deployment only
-└── ingress.yaml                      # ALB routing rules
+├── ingress.yaml                      # ALB routing rules
+├── sevicemonitor.yaml                # Prometheus scraping for app
+└── alertingrules.yaml                # Prometheus alert rules
 ```
  
 ### ECS → Kubernetes Mapping
@@ -130,7 +133,7 @@ Commit and Push your Git repo on your local computer to GitHub
 
 ### Step 6 - Workflow Trigger
 
-Push triggers the deploy workflow to build the images, push images to ECR, Deploy Kubernetes Manifests to EKS , Installs Helm and Load Balancer Controller to route traffic to pods
+Push triggers the deploy workflow to build the images, push images to ECR, Apply Kubernetes Manifests to EKS , Installs Helm, Installs Load Balancer Controller to route traffic to pods, Installs kube-prometheus-stack for observability(Prometheus,Grafana,AlertManager), Apply Manifests for the prometheus stack
 
 ```
 Code pushed
@@ -138,9 +141,11 @@ Code pushed
         → Docker build → tag with git commit SHA
             → Push to ECR
                 → kubectl apply manifests
-                  → kubectl rollout status
                     → Install Helm
                       → Install AWS LoadBalancer Controller
+                        → Install kube-prometheus-stack
+                            → kubectl apply manifests(kube-prometheus-stack)
+
                       
         
 ```
@@ -149,10 +154,7 @@ Code pushed
 Workflow Completed
 
 ![Workflow](screenshots/Screenshot9.png)
-EKS Pods
-
-![Workflow](screenshots/Screenshot10.png)
-K8 LoadBalancer showing DNS Name
+EKS Pods and K8 LoadBalancer showing DNS Name
 
 ![Workflow](screenshots/Screenshot11.png)
 Working Web Application
@@ -183,7 +185,57 @@ Check for previous `app/frontend/index.html` version in the commit history
 - Environment-scoped GitHub Secrets per environment
 
 ---
- 
+
+## Observability
+
+Deployed via `kube-prometheus-stack` Helm chart into a dedicated `monitoring` namespace. Observability runs alongside the application workloads on the same EKS cluster.
+
+### Stack
+
+- **Prometheus** — scrapes metrics from the cluster and application every 15 seconds
+- **Grafana** — dashboards for visualizing cluster and application metrics
+- **Alertmanager** — routes alerts based on defined rules
+- **Node Exporter** — exposes EC2 node-level metrics (CPU, memory, disk)
+- **kube-state-metrics** — exposes Kubernetes object metrics (pod status, replica counts)
+
+### Application Metrics
+
+The Flask API is instrumented with `prometheus-client`. A `/metrics` endpoint exposes:
+
+- `api_requests_total` — total requests by method, endpoint, and status code
+- `api_request_duration_seconds` — request latency histogram
+- `api_jobs_sent_total` — successful SQS job sends
+- `api_job_errors_total` — failed SQS job sends
+
+A `ServiceMonitor` resource tells Prometheus to scrape the API Service every 15 seconds automatically.
+
+### Grafana Dashboards
+
+Four custom panels built on application metrics:
+
+- **API Request Rate** — `rate(api_requests_total[5m])`
+- **API Error Rate** — `rate(api_requests_total{status=~"5.."}[5m])`
+- **API P95 Latency** — `histogram_quantile(0.95, rate(api_request_duration_seconds_bucket[5m]))`
+- **Jobs Sent to SQS** — `rate(api_jobs_sent_total[5m])`
+
+![Grafana Dashboard](screenshots/Screenshot13.png)
+
+### Alerting Rules
+
+Five PrometheusRule alerts defined in `k8/alertingrules.yaml`:
+
+| Alert | Condition |
+|---|---|
+| APIPodCrashing | Pod restart rate > 0 for 1 min |
+| APIHighErrorRate | 5xx rate > 0.1 req/s for 2 min |
+| APIJobFailures | SQS error rate > 0 for 1 min |
+| APIPodNotRunning | Available replicas < 1 for 1 min |
+| APIHighLatency | P95 latency > 1s for 2 min |
+
+![Alertmanager Rules](screenshots/Screenshot15.png)
+
+---
+
 ## Evolution from ECS Project
  
 Direct migration of [ECS-Microservices-CICD-Platform](https://github.com/Azamcloudspace/ECS-Microservices-CICD-Platform).
